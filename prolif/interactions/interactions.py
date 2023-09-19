@@ -230,8 +230,8 @@ class CationPi(Interaction):
             "[a;r6]1:[a;r6]:[a;r6]:[a;r6]:[a;r6]:[a;r6]:1",
             "[a;r5]1:[a;r5]:[a;r5]:[a;r5]:[a;r5]:1",
         ),
-        distance=4.5,
-        angle=(0, 30),
+        distance=5,
+        angle=(0, 60),
     ):
         self.cation = MolFromSmarts(cation)
         self.pi_ring = [MolFromSmarts(s) for s in pi_ring]
@@ -276,6 +276,35 @@ PiCation = CationPi.invert_role(
     "PiCation",
     "Cation-Pi interaction between a ligand (aromatic ring) and a residue (cation)",
 )
+
+class BackboneNHPi(plf.interactions.CationPi):
+     """NH-Pi interaction 
+
+    Parameters
+    ----------
+    cation : str
+        SMARTS for NH
+    pi_ring : tuple
+        SMARTS for aromatic rings (5 and 6 membered rings only)
+    distance : float
+        Cutoff distance between the centroid and the cation
+    angle : tuple
+        Min and max values for the angle between the vector normal to the ring
+        plane and the vector going from the centroid to the cation
+
+
+    .. versionchanged:: 1.1.0
+        Handles resonance forms for amidine and guanidine as cations.
+
+    .. versionchanged:: 2.0.0
+        ``angles`` parameter renamed to ``angle``.
+
+    """
+    def __init__(self):
+        super().__init__(cation="[$([N;+0](-[H])-[C;X4]-[C^2]=O)]")
+
+fp = plf.Fingerprint(interactions=["BackboneNHPi"])
+
 
 
 class FaceToFace(BasePiStacking):
